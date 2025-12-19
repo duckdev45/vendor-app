@@ -41,3 +41,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+# IDE - JetBrains
+.idea/
+*.iml
+*.iws
+
+# IDE - VS Code
+.vscode/
