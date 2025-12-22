@@ -1,8 +1,11 @@
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Mic, ArrowRight, Activity, CalendarClock} from 'lucide-react-native';
+import {useColorScheme} from "nativewind";
 
 export default function HomeScreen() {
+    const {colorScheme} = useColorScheme();
+    const isDarkMode = colorScheme === 'dark';
     return (
         <View className="flex-1 bg-background">
             {/* 背景光暈效果 */}
@@ -77,25 +80,25 @@ export default function HomeScreen() {
                     <TouchableOpacity
                         className="flex-row items-center bg-card p-5 rounded-3xl mb-4 border border-border">
                         <View className="w-12 h-12 rounded-2xl bg-muted items-center justify-center mr-4">
-                            <CalendarClock size={24} className="text-muted-foreground"/>
+                            <CalendarClock size={24} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                         </View>
                         <View className="flex-1">
                             <Text className="text-foreground font-semibold text-lg">連續壁工程</Text>
                             <Text className="text-muted-foreground text-sm">Today, 2:00 PM</Text>
                         </View>
-                        <ArrowRight size={20} className="text-muted-foreground"/>
+                        <ArrowRight size={20} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         className="flex-row items-center bg-card p-5 rounded-3xl mb-4 border border-border">
                         <View className="w-12 h-12 rounded-2xl bg-muted items-center justify-center mr-4">
-                            <Activity size={24} className="text-muted-foreground"/>
+                            <Activity size={24} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                         </View>
                         <View className="flex-1">
                             <Text className="text-foreground font-semibold text-lg">安全支撐檢查</Text>
                             <Text className="text-muted-foreground text-sm">Yesterday</Text>
                         </View>
-                        <ArrowRight size={20} className="text-muted-foreground"/>
+                        <ArrowRight size={20} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                     </TouchableOpacity>
 
                 </ScrollView>

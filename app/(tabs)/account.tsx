@@ -27,7 +27,7 @@ export default function AccountScreen() {
                     <View className="flex-row items-center bg-card p-4 rounded-2xl border border-border">
                         <View
                             className="w-16 h-16 rounded-full bg-muted items-center justify-center border border-border mr-4">
-                            <User size={32} className="text-zinc-500 dark:text-zinc-100"/>
+                            <User size={32} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                         </View>
                         <View className="flex-1">
                             <Text className="text-foreground text-xl font-bold">Admin</Text>
@@ -40,7 +40,7 @@ export default function AccountScreen() {
                             </View>
                         </View>
                         <TouchableOpacity className="bg-card p-2 rounded-full border border-border">
-                            <ChevronRight size={20} className="text-zinc-500 dark:text-zinc-100"/>
+                            <ChevronRight size={20} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -56,7 +56,7 @@ export default function AccountScreen() {
                         <View className="flex-row items-center justify-between p-4 border-b border-border">
                             <View className="flex-row items-center">
                                 <View className="w-8 h-8 rounded-lg bg-purple-500/20 items-center justify-center mr-3">
-                                    <Moon size={18} className="text-purple-600 dark:text-purple-400"/>
+                                    <Moon size={18} color={isDarkMode ? '#C084FC' : '#9333EA'}/>
                                 </View>
                                 <Text className="text-foreground font-medium text-base">深色模式</Text>
                             </View>
@@ -72,21 +72,21 @@ export default function AccountScreen() {
                         <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">
                             <View className="flex-row items-center">
                                 <View className="w-8 h-8 rounded-lg bg-blue-500/20 items-center justify-center mr-3">
-                                    <Type size={18} className="text-blue-400"/>
+                                    <Type size={18} color={'#60A5FA'}/>
                                 </View>
                                 <View>
                                     <Text className="text-foreground font-medium text-base">字體大小與樣式</Text>
                                     <Text className="text-muted-foreground text-xs">目前設定：標準 (預設)</Text>
                                 </View>
                             </View>
-                            <ChevronRight size={18} className="text-muted-foreground"/>
+                            <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
                         </TouchableOpacity>
 
                         {/* 通知設定 */}
                         <View className="flex-row items-center justify-between p-4">
                             <View className="flex-row items-center">
                                 <View className="w-8 h-8 rounded-lg bg-red-500/20 items-center justify-center mr-3">
-                                    <Bell size={18} className="text-red-400"/>
+                                    <Bell size={18} color={'#F87171'}/>
                                 </View>
                                 <Text className="text-foreground font-medium text-base">推播通知</Text>
                             </View>
@@ -105,17 +105,17 @@ export default function AccountScreen() {
                         <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">
                             <View className="flex-row items-center">
                                 <View className="w-8 h-8 rounded-lg bg-green-500/20 items-center justify-center mr-3">
-                                    <Lock size={18} className="text-green-400"/>
+                                    <Lock size={18} color={'#4ADE80'}/>
                                 </View>
                                 <Text className="text-foreground font-medium text-base">修改密碼</Text>
                             </View>
-                            <ChevronRight size={18} className="text-muted-foreground"/>
+                            <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity className="flex-row items-center justify-between p-4">
                             <View className="flex-row items-center">
                                 <View className="w-8 h-8 rounded-lg bg-orange-500/20 items-center justify-center mr-3">
-                                    <Smartphone size={18} className="text-orange-400"/>
+                                    <Smartphone size={18} color={'#FB923C'}/>
                                 </View>
                                 <View>
                                     <Text className="text-foreground font-medium text-base">綁定手機</Text>
@@ -135,10 +135,10 @@ export default function AccountScreen() {
                     <View className="bg-card rounded-2xl overflow-hidden border border-border mb-6">
                         <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">
                             <View className="flex-row items-center">
-                                <FileText size={18} className="text-muted-foreground mr-3"/>
+                                <FileText size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'} mr-3/>
                                 <Text className="text-foreground font-medium text-base">隱私權條款</Text>
                             </View>
-                            <ChevronRight size={18} className="text-muted-foreground"/>
+                            <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
                         </TouchableOpacity>
 
                         <View className="flex-row items-center justify-between p-4">
@@ -152,7 +152,7 @@ export default function AccountScreen() {
                     {/* === 登出 === */}
                     <TouchableOpacity
                         className="flex-row items-center justify-center bg-red-500/10 border border-red-500/20 p-4 rounded-2xl active:bg-red-500/20">
-                        <LogOut size={20} className="text-red-500 mr-2"/>
+                        <LogOut size={20} color={'#EF4444'} mr-2/>
                         <Text className="text-red-500 font-bold text-base">登出帳號</Text>
                     </TouchableOpacity>
 

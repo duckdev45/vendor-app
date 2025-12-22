@@ -7,6 +7,7 @@ import {
     ChevronRight,
     FileText
 } from 'lucide-react-native';
+import {useColorScheme} from "nativewind";
 
 // 模擬通知數據
 const MOCK_NOTIFICATIONS = [
@@ -58,6 +59,9 @@ const MOCK_NOTIFICATIONS = [
 ];
 
 export default function NotificationScreen() {
+    const {colorScheme} = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     return (
         <View className="flex-1 bg-background">
             <SafeAreaView className="flex-1">
@@ -65,7 +69,7 @@ export default function NotificationScreen() {
                 <View className="px-5 pt-2 pb-4 border-b border-border bg-background">
                     <View className="flex-row justify-between items-center">
                         <View className="flex-row items-center">
-                            <Bell size={24} className="text-primary mr-2"/>
+                            <Bell size={24} color={isDark ? '#FBBF24' : '#F59E0B'} style={{marginRight: 8}}/>
                             <Text className="text-foreground text-2xl font-bold">通知中心</Text>
                         </View>
                         <TouchableOpacity>
@@ -89,7 +93,7 @@ export default function NotificationScreen() {
                                     item.type === 'defect' ? 'bg-red-500/20' :
                                         item.type === 'task' ? 'bg-green-500/20' : 'bg-blue-500/20'
                                 }`}>
-                                {item.type === 'defect' && <AlertTriangle size={18} className="text-red-500"/>}
+                                {item.type === 'defect' && <AlertTriangle size={18} color={'#EF4444'}/>}
                                 {item.type === 'task' && <CheckCircle2 size={18} className="text-green-500"/>}
                                 {item.type === 'system' && <FileText size={18} className="text-blue-500"/>}
                             </View>
@@ -119,7 +123,8 @@ export default function NotificationScreen() {
                                 <View
                                     className="flex-row justify-between items-center pt-3 border-t border-border/50">
                                     <View className="bg-muted px-2 py-1 rounded text-xs">
-                                        <Text className="text-muted-foreground text-[10px] font-bold">{item.project}</Text>
+                                        <Text
+                                            className="text-muted-foreground text-[10px] font-bold">{item.project}</Text>
                                     </View>
                                     <View className="flex-row items-center">
                                         <Text className="text-muted-foreground text-xs mr-1">查看詳情</Text>

@@ -6,10 +6,10 @@ import {
     AlertCircle,
     Clock,
     ChevronRight,
-    Filter,
     ClipboardList,
     Building2
 } from 'lucide-react-native';
+import {useColorScheme} from "nativewind";
 
 // 模擬廠商的待辦任務數據
 const MOCK_TASKS = [
@@ -66,6 +66,9 @@ const MOCK_TASKS = [
 ];
 
 export default function TaskScreen() {
+    const {colorScheme} = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     return (
         <View className="flex-1 bg-background">
             <SafeAreaView className="flex-1">
@@ -73,12 +76,12 @@ export default function TaskScreen() {
                 <View className="px-5 pt-2 pb-4 border-b border-border bg-background">
                     <View className="flex-row justify-between items-center mb-2">
                         <View className="flex-row items-center">
-                            <ClipboardList size={24} className="text-primary mr-2"/>
+                            <ClipboardList size={24} color={isDark ? '#FBBF24' : '#F59E0B'} style={{marginRight: 8}}/>
                             <Text className="text-foreground text-2xl font-bold">任務清單</Text>
                         </View>
-                        <TouchableOpacity className="bg-muted p-2 rounded-full border border-border">
-                            <Filter size={20} className="text-muted-foreground"/>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity className="bg-muted p-2 rounded-full border border-border">*/}
+                        {/*    <Filter size={20} className="text-muted-foreground"/>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                     <Text className="text-muted-foreground text-sm">
                         今日還有 <Text className="text-primary font-bold">2</Text> 項急件需處理
@@ -89,7 +92,8 @@ export default function TaskScreen() {
                 <ScrollView className="flex-1 px-5 pt-4" contentContainerStyle={{paddingBottom: 100}}>
 
                     {/* 分類標題：待處理 */}
-                    <Text className="text-muted-foreground text-xs font-bold mb-3 uppercase tracking-wider">待處理事項</Text>
+                    <Text
+                        className="text-muted-foreground text-xs font-bold mb-3 uppercase tracking-wider">待處理事項</Text>
 
                     {MOCK_TASKS.filter(t => t.status !== 'done').map((task) => (
                         <TouchableOpacity
@@ -126,7 +130,8 @@ export default function TaskScreen() {
                             {/* 底部資訊：時間與按鈕 */}
                             <View className="flex-row justify-between items-center pt-3 border-t border-border/70">
                                 <View className="flex-row items-center">
-                                    <Clock size={14} className={task.status === 'urgent' ? 'text-primary' : 'text-muted-foreground'}
+                                    <Clock size={14}
+                                           className={task.status === 'urgent' ? 'text-primary' : 'text-muted-foreground'}
                                            style={{marginRight: 6}}/>
                                     <Text
                                         className={`text-xs ${task.status === 'urgent' ? 'text-primary font-bold' : 'text-muted-foreground'}`}>

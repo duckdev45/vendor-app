@@ -170,7 +170,7 @@ export default function CameraScreen() {
     const processingRef = useRef<ViewShot>(null);
     const insets = useSafeAreaInsets();
     const {colorScheme} = useColorScheme();
-    const isDark = colorScheme === 'dark';
+    const isDarkMode = colorScheme === 'dark';
 
     const [mode, setMode] = useState<Mode>('scan');
     const [torch, setTorch] = useState(false);
@@ -329,7 +329,7 @@ export default function CameraScreen() {
         );
     }
 
-    const MASK_COLOR = isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.9)';
+    const MASK_COLOR = isDarkMode ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.9)';
 
     return (
         <View className="flex-1 bg-black">
@@ -369,7 +369,7 @@ export default function CameraScreen() {
                                 width: SCAN_SIZE,
                                 height: SCAN_SIZE,
                                 backgroundColor: 'transparent',
-                                borderColor: isDark ? '#FBBF24' : '#F59E0B',
+                                borderColor: isDarkMode ? '#FBBF24' : '#F59E0B',
                                 borderWidth: 2,
                                 borderRadius: 20
                             }}/>
@@ -529,14 +529,14 @@ export default function CameraScreen() {
                               className="bg-background z-10 border-b border-border">
                             <View className="flex-row justify-between items-center px-4 py-4">
                                 <TouchableOpacity onPress={() => setMode('scan')} className="p-2 -ml-2">
-                                    <X className="text-muted-foreground" size={26}/>
+                                    <X color={isDarkMode ? '#F4F4F5' : '#71717A'} size={26}/>
                                 </TouchableOpacity>
                                 <Text className="text-foreground text-lg font-bold">新增品管照片</Text>
                                 <TouchableOpacity className="p-2 -mr-2"><Text
                                     className="text-primary font-bold text-base">儲存草稿</Text></TouchableOpacity>
                             </View>
                             <View className="bg-primary/10 px-4 py-2 flex-row items-center mb-2 mx-4 rounded-lg">
-                                <Check size={14} className="text-primary"/>
+                                <Check size={14} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                                 <Text
                                     className="text-primary text-xs ml-2">已自動帶入 {formData.project || '建案'} 資訊</Text>
                             </View>
@@ -568,7 +568,7 @@ export default function CameraScreen() {
                                     <Text
                                         className={`${formData.areaLabel ? 'text-foreground' : 'text-muted-foreground'} text-base font-bold`}>{formData.areaLabel || '請選擇區域...'}</Text>
                                     <MapPin size={18}
-                                            className={formData.areaLabel ? 'text-primary' : 'text-muted-foreground'}/>
+                                            color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                                 </TouchableOpacity>
                             </View>
                             <View className="mb-8">
@@ -584,15 +584,15 @@ export default function CameraScreen() {
                                 />
                             </View>
                             <Text className="text-muted-foreground text-xs mb-2 pl-1">新增照片</Text>
-                            <View className="flex-row gap-3 mb-8">
+                            <View className=" gap-3 mb-8">
                                 <TouchableOpacity onPress={() => setMode('capture')}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
-                                    <CameraIcon size={28} className="text-primary"/><Text
-                                    className="text-foreground font-bold mt-2">拍攝照片</Text>
+                                    <CameraIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
+                                    className="text-muted-foreground font-bold mt-2">拍攝照片</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={pickImage}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
-                                    <ImageIcon size={28} className="text-muted-foreground"/><Text
+                                    <ImageIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
                                     className="text-muted-foreground font-bold mt-2">從相簿選取</Text>
                                 </TouchableOpacity>
                             </View>
