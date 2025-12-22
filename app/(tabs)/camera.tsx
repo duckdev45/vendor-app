@@ -359,7 +359,7 @@ export default function CameraScreen() {
                                         {selectedItem.name}
                                     </Text>
                                 </View>
-                                <ChevronDown size={20} className="text-primary"/>
+                                <ChevronDown size={20} color={isDarkMode ? '#FBBF24' : '#F59E0B'}/>
                             </TouchableOpacity>
                         </View>
 
@@ -370,8 +370,8 @@ export default function CameraScreen() {
                                 height: SCAN_SIZE,
                                 backgroundColor: 'transparent',
                                 borderColor: isDarkMode ? '#FBBF24' : '#F59E0B',
-                                borderWidth: 2,
-                                borderRadius: 20
+                                borderWidth: 5,
+                                borderRadius: 1
                             }}/>
                             <View style={{flex: 1, backgroundColor: MASK_COLOR}}/>
                         </View>
@@ -393,7 +393,7 @@ export default function CameraScreen() {
                             <Text className="text-foreground font-bold text-xl">選擇查驗工項</Text>
                             <TouchableOpacity onPress={() => setIsSelectorOpen(false)}
                                               className="bg-muted p-2 rounded-full">
-                                <X size={20} className="text-muted-foreground"/>
+                                <X color={isDarkMode ? '#F4F4F5' : '#71717A'} size={26}/>
                             </TouchableOpacity>
                         </View>
                         <ScrollView>
