@@ -14,35 +14,87 @@
 
 ## 🎨 Theme & Styling
 
-This project uses **NativeWind v4** for styling, which allows us to use Tailwind CSS utility classes in a React Native environment.
+This project uses **NativeWind v4** for styling, which allows us to use Tailwind CSS utility classes in a React Native environment. The theme system (light/dark mode) is built on three core files: `global.css`, `tailwind.config.js`, and a specific architectural pattern in the `app` directory.
 
-### Core Concepts
+### 1. `global.css`: The Source of Truth for Colors
 
-1.  **CSS Variables for Theming**:
-    The entire color system (light and dark mode) is managed through CSS variables defined in `global.css`.
+All theme colors are defined as CSS variables. This file establishes the color palette for both light and dark modes.
 
-    -   The `:root` selector defines the default (light) theme colors.
-    -   The `.dark` selector defines the overrides for the dark theme.
-    -   Semantic color names (e.g., `--background`, `--foreground`, `--primary`, `--card`) are used for consistency.
+-   The `:root` selector defines the default (light) theme.
+-   The `@media (prefers-color-scheme: dark)` selector defines the overrides for the dark theme.
 
-2.  **Tailwind Configuration**:
-    `tailwind.config.js` is configured to use these CSS variables. For example, `colors.background` is mapped to `rgb(var(--background))`. This makes utility classes like `bg-background` and `text-foreground` automatically theme-aware.
+```css
+/* global.css */
+@layer base {
+    :root {
+        --background: 255 255 255;
+        --foreground: 9 9 11;
+        --primary: 245 158 11;
+        /* ... and other light mode colors */
+    }
 
-3.  **`darkMode: 'class'` Strategy**:
-    The dark mode is activated by adding the `dark` class to an ancestor element in the component tree.
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --background: 9 9 11;
+            --foreground: 250 250 250;
+            --primary: 251 191 36;
+            /* ... and other dark mode colors */
+        }
+    }
+}
+```
 
-### Architectural Pattern for Theme Switching
+### 2. `tailwind.config.js`: Consuming CSS Variables
 
-To avoid conflicts with Expo Router's navigation context, a specific architectural pattern is used:
+The Tailwind configuration is set up to consume the CSS variables from `global.css`. This is done by referencing the variables in the `theme.extend.colors` section. This setup makes utility classes like `bg-background` and `text-primary` automatically theme-aware.
+
+```javascript
+// tailwind.config.js
+module.exports = {
+    // ...
+    theme: {
+        extend: {
+            colors: {
+                background: "rgb(var(--background))",
+                foreground: "rgb(var(--foreground))",
+                primary: {
+                    DEFAULT: "rgb(var(--primary))",
+                    foreground: "rgb(var(--primary-foreground))",
+                },
+                // ... and other semantic colors
+            },
+        },
+    },
+    // ...
+}
+```
+
+### 3. Architectural Pattern: Applying the Theme
+
+A specific two-part pattern is used to apply the theme without conflicting with Expo Router's navigation context.
 
 -   **`app/_layout.tsx` (Root Layout)**: This file is kept minimal. It sets up the global `ThemeProvider` from React Navigation but **does not** apply any dynamic `className` for theming. This ensures the root navigator remains stable and does not crash upon theme changes.
 
--   **`app/(tabs)/_layout.tsx` (Tab Layout)**: This file is the key to our theme-switching implementation.
-    -   It uses the `useColorScheme` hook from NativeWind to get the current theme (`'light'` or `'dark'`).
-    -   It wraps the `<Tabs>` component in a `<View className={colorScheme}>`.
-    -   This `View` acts as the container for all five tab screens, providing the necessary `.dark` class to its children. This allows all screens to correctly apply their dark mode styles without interfering with the parent navigation context.
+-   **`app/(tabs)/_layout.tsx` (Tab Layout)**: This file is the key to our theme-switching implementation. It wraps all the tab screens in a `View` that dynamically applies the current color scheme as a class (`light` or `dark`).
 
-This structure ensures that the app is both stable and correctly themed.
+    ```tsx
+    // app/(tabs)/_layout.tsx
+    export default function TabLayout() {
+        const { colorScheme } = useColorScheme();
+        const isDark = colorScheme === 'dark';
+
+        // ... logic for tab bar colors
+
+        return (
+            <View className={`${colorScheme} flex-1 bg-background`}>
+                <Tabs>
+                    {/* All screens here will inherit the theme */}
+                </Tabs>
+            </View>
+        );
+    }
+    ```
+This structure ensures that NativeWind's `darkMode: 'class'` strategy works correctly for all pages, as they are descendants of the `View` with the `.dark` class applied, while maintaining the stability of the root navigation stack.
 
 ---
 
