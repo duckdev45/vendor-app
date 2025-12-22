@@ -2,18 +2,27 @@ import {View, Text, ScrollView, TouchableOpacity, Switch} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useState} from 'react';
 import {
-    User, Type, Bell, Moon, Lock, FileText, LogOut, ChevronRight, Smartphone
+    User, Type, Bell, Moon, Lock, FileText, LogOut, ChevronRight, Smartphone, Minus, Plus
 } from 'lucide-react-native';
 import {useColorScheme} from 'nativewind';
+import {usePreferences} from '@/context/preferences-context';
 
 export default function AccountScreen() {
-    // 取出控制權：colorScheme (目前狀態), toggleColorScheme (切換函數)
     const {colorScheme, toggleColorScheme} = useColorScheme();
-
-    // 控制 Switch 顯示的 (判斷目前是否為 dark)
     const isDarkMode = colorScheme === 'dark';
-
     const [isNotifEnabled, setIsNotifEnabled] = useState(true);
+
+    // 取得字體控制權
+    const {fontScale, setFontScale} = usePreferences();
+
+    // 調整邏輯：範圍 0.8x ~ 1.6x
+    const increaseFont = () => {
+        if (fontScale < 1.6) setFontScale(Math.round((fontScale + 0.1) * 10) / 10);
+    };
+
+    const decreaseFont = () => {
+        if (fontScale > 0.8) setFontScale(Math.round((fontScale - 0.1) * 10) / 10);
+    };
 
     return (
         <View className="flex-1 bg-background">
@@ -60,27 +69,53 @@ export default function AccountScreen() {
                                 </View>
                                 <Text className="text-foreground font-medium text-base">深色模式</Text>
                             </View>
-
-                            {/* 綁定切換功能 */}
-                            <Switch
-                                value={isDarkMode}
-                                onValueChange={toggleColorScheme}
-                            />
+                            <Switch value={isDarkMode} onValueChange={toggleColorScheme}/>
                         </View>
 
-                        {/* 字體設定 (Demo) */}
-                        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">
-                            <View className="flex-row items-center">
+                        {/* 🔥 字體大小調整 (Grandpa Mode) */}
+                        <View className="p-4 border-b border-border">
+                            <View className="flex-row items-center mb-3">
                                 <View className="w-8 h-8 rounded-lg bg-blue-500/20 items-center justify-center mr-3">
                                     <Type size={18} color={'#60A5FA'}/>
                                 </View>
                                 <View>
-                                    <Text className="text-foreground font-medium text-base">字體大小與樣式</Text>
-                                    <Text className="text-muted-foreground text-xs">目前設定：標準 (預設)</Text>
+                                    <Text className="text-foreground font-medium text-base">字體大小</Text>
+                                    <Text className="text-muted-foreground text-xs">
+                                        目前倍率：{fontScale.toFixed(1)}x {fontScale >= 1.4 ? '(阿公模式 👴)' : ''}
+                                    </Text>
                                 </View>
                             </View>
-                            <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
-                        </TouchableOpacity>
+
+                            {/* 控制按鈕列 */}
+                            <View className="flex-row items-center justify-between bg-muted/50 rounded-xl p-2">
+                                <TouchableOpacity
+                                    onPress={decreaseFont}
+                                    className="w-10 h-10 bg-card rounded-lg items-center justify-center border border-border active:scale-95"
+                                >
+                                    <Minus size={20} color={isDarkMode ? '#FFFFFF' : '#000000'}/>
+                                </TouchableOpacity>
+
+                                <View className="flex-row items-end flex-1 justify-center">
+                                    <Text className="text-muted-foreground text-xs font-bold mb-1 mr-2">A</Text>
+                                    {/* 進度條顯示 */}
+                                    <View
+                                        className="h-1 bg-border w-24 rounded-full mx-2 overflow-hidden flex-row items-center">
+                                        <View
+                                            style={{width: `${((fontScale - 0.8) / 0.8) * 100}%`}}
+                                            className="h-full bg-primary"
+                                        />
+                                    </View>
+                                    <Text className="text-foreground text-lg font-bold ml-2">A</Text>
+                                </View>
+
+                                <TouchableOpacity
+                                    onPress={increaseFont}
+                                    className="w-10 h-10 bg-card rounded-lg items-center justify-center border border-border active:scale-95"
+                                >
+                                    <Plus size={20} color={isDarkMode ? '#FFFFFF' : '#000000'}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
 
                         {/* 通知設定 */}
                         <View className="flex-row items-center justify-between p-4">
@@ -90,10 +125,7 @@ export default function AccountScreen() {
                                 </View>
                                 <Text className="text-foreground font-medium text-base">推播通知</Text>
                             </View>
-                            <Switch
-                                value={isNotifEnabled}
-                                onValueChange={setIsNotifEnabled}
-                            />
+                            <Switch value={isNotifEnabled} onValueChange={setIsNotifEnabled}/>
                         </View>
                     </View>
 
