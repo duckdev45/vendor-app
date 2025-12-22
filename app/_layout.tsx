@@ -1,12 +1,27 @@
+import '@/global.css';
 import {Stack} from 'expo-router';
-import '../global.css'
+import {StatusBar} from 'expo-status-bar';
+import {ThemeProvider, DarkTheme, DefaultTheme} from '@react-navigation/native';
+import {View} from 'react-native';
+import {useColorScheme} from 'nativewind';
 
 export default function RootLayout() {
+    const {colorScheme} = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     return (
-        <Stack>
-            {/* 這裡設定 headerShown: false，因為我們的主畫面是 Tabs，不需要再多一層 Stack Header */}
-            <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
-            <Stack.Screen name="+not-found"/>
-        </Stack>
+        <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+
+            <View style={{flex: 1}} className={colorScheme}>
+
+                <StatusBar style={isDark ? 'light' : 'dark'}/>
+
+                <Stack screenOptions={{headerShown: false}}>
+                    <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+                    <Stack.Screen name="+not-found" options={{title: 'Oops!'}}/>
+                </Stack>
+
+            </View>
+        </ThemeProvider>
     );
 }

@@ -1,50 +1,77 @@
-# Welcome to your Expo app 👋
+# 🏗️ Fu-Mao Vendor App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## ⚙️ Tech Stack
 
-## Get started
+- **Core**: [React Native (Expo)](https://expo.dev) + [React 19](https://react.dev)
+- **Language**: [TypeScript](https://www.typescriptlang.org)
+- **Styling**: [NativeWind v4](https://www.nativewind.dev) (Tailwind CSS for RN)
+* **Routing**: [Expo Router](https://docs.expo.dev/router/introduction) (File-based routing)
+- **State/Async**: [TanStack Query (React Query)](https://tanstack.com/query)
+- **Validation**: [Zod](https://zod.dev) (Schema Validation)
+- **Hardware**: `expo-camera`, `expo-sensors` (自動水平偵測), `react-native-view-shot` (浮水印合成)
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🎨 Theme & Styling
 
-2. Start the app
+This project uses **NativeWind v4** for styling, which allows us to use Tailwind CSS utility classes in a React Native environment.
 
-   ```bash
-   npx expo start
-   ```
+### Core Concepts
 
-In the output, you'll find options to open the app in a
+1.  **CSS Variables for Theming**:
+    The entire color system (light and dark mode) is managed through CSS variables defined in `global.css`.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+    -   The `:root` selector defines the default (light) theme colors.
+    -   The `.dark` selector defines the overrides for the dark theme.
+    -   Semantic color names (e.g., `--background`, `--foreground`, `--primary`, `--card`) are used for consistency.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+2.  **Tailwind Configuration**:
+    `tailwind.config.js` is configured to use these CSS variables. For example, `colors.background` is mapped to `rgb(var(--background))`. This makes utility classes like `bg-background` and `text-foreground` automatically theme-aware.
 
-## Get a fresh project
+3.  **`darkMode: 'class'` Strategy**:
+    The dark mode is activated by adding the `dark` class to an ancestor element in the component tree.
 
-When you're ready, run:
+### Architectural Pattern for Theme Switching
 
-```bash
-npm run reset-project
-```
+To avoid conflicts with Expo Router's navigation context, a specific architectural pattern is used:
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+-   **`app/_layout.tsx` (Root Layout)**: This file is kept minimal. It sets up the global `ThemeProvider` from React Navigation but **does not** apply any dynamic `className` for theming. This ensures the root navigator remains stable and does not crash upon theme changes.
 
-## Learn more
+-   **`app/(tabs)/_layout.tsx` (Tab Layout)**: This file is the key to our theme-switching implementation.
+    -   It uses the `useColorScheme` hook from NativeWind to get the current theme (`'light'` or `'dark'`).
+    -   It wraps the `<Tabs>` component in a `<View className={colorScheme}>`.
+    -   This `View` acts as the container for all five tab screens, providing the necessary `.dark` class to its children. This allows all screens to correctly apply their dark mode styles without interfering with the parent navigation context.
 
-To learn more about developing your project with Expo, look at the following resources:
+This structure ensures that the app is both stable and correctly themed.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## Project Structure
 
-Join our community of developers creating universal apps.
+採用 **功能導向 (Feature-based)** 搭配 **三層式架構** 來組織程式碼
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```text
+vendor-app/
+├── 📂 app/                 # 頁面路由 (Expo Router)
+│   ├── (tabs)/            # 底部導航頁 (首頁、相機、任務、設定)
+│   └── _layout.tsx        # 全域佈局與 Theme Provider
+│
+├── 📂 components/          # UI 元件 (Atomic Design)
+│   ├── ui/                # 基礎元件 (Button, Input, Card...)
+│   └── ...
+│
+├── 📂 lib/                 # 第三方套件設定
+│   └── api-client.ts       # Axios 實例 (攔截器、Token 注入)
+│
+├── 📂 services/            # API 服務層 (純邏輯，無 React)
+│   └── task.service.ts    # 定義 Endpoint 與 fetch 邏輯
+│
+├── 📂 schemas/             # 資料驗證層 (Zod)
+│   └── task.schema.ts     # 定義資料型別與驗證規則
+│
+├── 📂 hooks/               # React Hooks
+│   └── queries/           # TanStack Query 封裝 (useTasks, useUpload...)
+│
+├── constants/           # 靜態常數 (Colors, Fonts)
+├── global.css           # 全域樣式 (NativeWind v4 主題變數)
+└── tailwind.config.js   # Tailwind 設定
