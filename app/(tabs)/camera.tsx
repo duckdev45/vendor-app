@@ -66,31 +66,41 @@ const INSPECTION_ITEMS = [
     {id: '4', name: '連續壁鋼筋查驗'},
 ];
 
+// WatermarkInfo 元件：字體大小防呆機制
 const WatermarkInfo = ({formData, photoWidth, photoHeight}: {
     formData: any,
     photoWidth: number,
     photoHeight: number
 }) => {
     const nowStr = dayjs().format('YYYY-MM-DD HH:mm');
-    const baseDimension = Math.min(photoWidth, photoHeight);
-    const unit = baseDimension * 0.009;
 
+    // 防呆：如果寬高讀取失敗，給予預設值 (避免 Math.min 算出 0)
+    const safeW = photoWidth || 1024;
+    const safeH = photoHeight || 768;
+
+    // 使用照片的「短邊」作為計算基準
+    const baseDimension = Math.min(safeW, safeH);
+
+    // 基準倍率 0.9% (加上 Math.max 確保不為 0)
+    const unit = Math.max(0.1, baseDimension * 0.009);
+
+    // 防呆：強制設定最小值 (Math.max)，避免 Android error
     const styles = {
         padding: unit * 3.5,
         borderRadius: unit * 2,
         gap: unit * 1.2,
-        titleSize: unit * 5.0,
-        textSize: unit * 3.2,
-        smallTextSize: unit * 2.8,
+        titleSize: Math.max(14, unit * 5.0), // 最小 14px
+        textSize: Math.max(12, unit * 3.2),  // 最小 12px
+        smallTextSize: Math.max(10, unit * 2.8), // 最小 10px
         iconSize: unit * 3.0,
-        lineWidth: unit * 0.2,
-        barWidth: unit,
-        barHeight: unit * 4.5,
+        lineWidth: Math.max(1, unit * 0.2), // 線條至少 1px
+        barWidth: Math.max(2, unit),
+        barHeight: Math.max(10, unit * 4.5),
     };
 
     const locationText = `${formData.floor || ''} ${formData.room || ''} ${formData.areaLabel || ''}`.trim();
-    const isLandscape = photoWidth > photoHeight;
-    const actualCanvasWidth = isLandscape ? photoHeight : photoWidth;
+    const isLandscape = safeW > safeH;
+    const actualCanvasWidth = isLandscape ? safeH : safeW;
 
     return (
         <View
@@ -102,6 +112,7 @@ const WatermarkInfo = ({formData, photoWidth, photoHeight}: {
                 maxWidth: actualCanvasWidth * 0.9,
             }}
         >
+            {/* 建案名稱 */}
             <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: styles.gap * 2}}>
                 <View style={{
                     width: styles.barWidth,
@@ -121,21 +132,25 @@ const WatermarkInfo = ({formData, photoWidth, photoHeight}: {
                 </Text>
             </View>
 
+            {/* 查驗位置 */}
             <Text style={{color: 'white', fontSize: styles.textSize, fontWeight: '600', marginBottom: styles.gap}}
                   numberOfLines={2}>
                 查驗位置：{locationText || '尚未選擇'}
             </Text>
 
+            {/* 項目 */}
             <Text style={{color: 'white', fontSize: styles.textSize, marginBottom: styles.gap * 1.5}} numberOfLines={2}>
                 項目：{formData.item || '未指定項目'}
             </Text>
 
+            {/* 分隔線 */}
             <View style={{
                 height: styles.lineWidth,
                 backgroundColor: 'rgba(255,255,255,0.3)',
                 marginBottom: styles.gap * 1.5
             }}/>
 
+            {/* 時間與備註 */}
             <View>
                 <Text style={{color: '#E4E4E7', fontSize: styles.smallTextSize, marginBottom: styles.gap}}>
                     時間：{nowStr}
@@ -161,7 +176,6 @@ export default function CameraScreen() {
     const isDarkMode = colorScheme === 'dark';
 
     const [mode, setMode] = useState<Mode>('scan');
-    // 掃描鎖，防止連續觸發
     const [scanned, setScanned] = useState(false);
 
     const [torch, setTorch] = useState(false);
@@ -184,10 +198,9 @@ export default function CameraScreen() {
     const [processingQueue, setProcessingQueue] = useState<any[]>([]);
     const [currentProcessing, setCurrentProcessing] = useState<any>(null);
 
-    // 當模式切換回 scan 時，重置掃描鎖
     useEffect(() => {
         if (mode === 'scan') {
-            const timer = setTimeout(() => setScanned(false), 500); // 給一點緩衝時間
+            const timer = setTimeout(() => setScanned(false), 500);
             return () => clearTimeout(timer);
         }
     }, [mode]);
@@ -235,12 +248,8 @@ export default function CameraScreen() {
     }, [currentProcessing]);
 
     const handleBarCodeScanned = ({type, data}: BarcodeScanningResult) => {
-        // 不是掃描模式，或「已經掃描過」，就直接擋掉
         if (mode !== 'scan' || scanned) return;
-
-        // 鎖住
         setScanned(true);
-        // 震動回饋
         Vibration.vibrate();
 
         try {
@@ -253,41 +262,34 @@ export default function CameraScreen() {
                     room: parsedData.room || '',
                     item: parsedData.item || selectedItem.name,
                 }));
-                // 成功跳轉，鎖會因為 mode 改變的 useEffect 自動解開 (或保持鎖住直到下次進入 scan)
                 setMode('form');
             } else {
-                // 失敗：跳 Alert，按下 OK 後才解鎖
-                Alert.alert(
-                    "格式不符",
-                    "QR Code 內容缺少必要資訊",
-                    [{text: "確定", onPress: () => setScanned(false)}]
-                );
+                Alert.alert("格式不符", "QR Code 內容缺少必要資訊", [{text: "確定", onPress: () => setScanned(false)}]);
             }
         } catch (error) {
-            console.log(error);
-            // 失敗：跳 Alert，按下 OK 後才解鎖
-            Alert.alert(
-                "掃描失敗",
-                "QR Code 格式有誤",
-                [{text: "確定", onPress: () => setScanned(false)}]
-            );
+            console.error(error);
+            Alert.alert("掃描失敗", "這不是本系統支援的 QR Code 格式", [{
+                text: "確定",
+                onPress: () => setScanned(false)
+            }]);
         }
     };
 
     const takePicture = async () => {
         if (cameraRef.current) {
             try {
+                // skipProcessing: true 會加速拍照，但有時會導致寬高資訊不準確，我們在 WatermarkInfo 做了防呆
                 const photo = await cameraRef.current.takePictureAsync({quality: 0.8, skipProcessing: true});
                 if (photo) {
                     setProcessingQueue(prev => [...prev, {
                         uri: photo.uri,
-                        width: photo.width,
-                        height: photo.height,
+                        width: photo.width || 1080, // 防呆：如果寬度是 0，預設 1080
+                        height: photo.height || 1920, // 防呆：預設 1920
                         isLandscape: deviceOrientation === 'landscape'
                     }]);
                 }
-            } catch (error) {
-                console.log(error);
+            } catch (e) {
+                console.error(e);
                 Alert.alert("錯誤", "拍照失敗");
             }
         }
@@ -303,8 +305,8 @@ export default function CameraScreen() {
             if (!result.canceled) {
                 const newItems = result.assets.map((asset) => ({
                     uri: asset.uri,
-                    width: asset.width,
-                    height: asset.height,
+                    width: asset.width || 1080,
+                    height: asset.height || 1920,
                     isLandscape: asset.width > asset.height
                 }));
                 setProcessingQueue((prev) => [...prev, ...newItems]);
@@ -356,7 +358,7 @@ export default function CameraScreen() {
                     <CameraView
                         style={StyleSheet.absoluteFill}
                         facing="back"
-                        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned} // 🔥 掃過就暫時移除 listener
+                        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
                         barcodeScannerSettings={{barcodeTypes: ["qr"]}}
                     />
                     <View style={StyleSheet.absoluteFill}>
@@ -543,6 +545,7 @@ export default function CameraScreen() {
                 )}
                 {mode === 'form' && (
                     <View className="flex-1 bg-background">
+                        {/* 這裡保持原樣 ... */}
                         <View style={{paddingTop: insets.top + 10}}
                               className="bg-background z-10 border-b border-border">
                             <View className="flex-row justify-between items-center px-4 py-4">
@@ -603,24 +606,12 @@ export default function CameraScreen() {
                             </View>
                             <Text className="text-muted-foreground text-xs mb-2 pl-1">新增照片</Text>
                             <View className=" gap-3 mb-8">
-                                <TouchableOpacity onPress={() => {
-                                    if (!formData.area) {
-                                        Alert.alert("請先選擇區域", "必須先指定一個檢查區域才能新增照片");
-                                        return;
-                                    }
-                                    setMode('capture');
-                                }}
+                                <TouchableOpacity onPress={() => setMode('capture')}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
                                     <CameraIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
                                     className="text-muted-foreground font-bold mt-2">拍攝照片</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => {
-                                    if (!formData.area) {
-                                        Alert.alert("請先選擇區域", "必須先指定一個檢查區域才能新增照片");
-                                        return;
-                                    }
-                                    pickImage();
-                                }}
+                                <TouchableOpacity onPress={pickImage}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
                                     <ImageIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
                                     className="text-muted-foreground font-bold mt-2">從相簿選取</Text>
