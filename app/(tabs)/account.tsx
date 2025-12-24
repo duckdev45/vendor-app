@@ -6,9 +6,11 @@ import {
 } from 'lucide-react-native';
 import {useColorScheme} from 'nativewind';
 import {usePreferences} from '@/context/preferences-context';
+import {useAuth} from '@/context/auth-context';
 
 export default function AccountScreen() {
     const {colorScheme, toggleColorScheme} = useColorScheme();
+    const {signOut} = useAuth();
     const isDarkMode = colorScheme === 'dark';
     const [isNotifEnabled, setIsNotifEnabled] = useState(true);
 
@@ -183,6 +185,7 @@ export default function AccountScreen() {
 
                     {/* === 登出 === */}
                     <TouchableOpacity
+                        onPress={signOut}
                         className="flex-row items-center justify-center bg-red-500/10 border border-red-500/20 p-4 rounded-2xl active:bg-red-500/20">
                         <LogOut size={20} color={'#EF4444'}/>
                         <Text className="text-red-500 font-bold text-base ml-2">登出</Text>

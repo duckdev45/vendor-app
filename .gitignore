@@ -49,3 +49,7 @@ app-example
 
 # IDE - VS Code
 .vscode/
+
+# Environment variables file
+envs/
+*.env
