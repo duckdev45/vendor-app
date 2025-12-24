@@ -28,9 +28,9 @@ import {useColorScheme} from "nativewind";
 type Mode = 'scan' | 'form' | 'capture';
 
 type QRCodeData = {
-    project?: string;
+    constructionName?: string;
     floor?: string;
-    unit?: string;
+    room?: string;
     item?: string;
 };
 
@@ -93,7 +93,7 @@ const WatermarkInfo = ({formData, photoWidth, photoHeight}: {
         barHeight: unit * 4.5,
     };
 
-    const locationText = `${formData.floor || ''} ${formData.unit || ''} ${formData.areaLabel || ''}`.trim();
+    const locationText = `${formData.floor || ''} ${formData.room || ''} ${formData.areaLabel || ''}`.trim();
 
     // 計算實際畫布寬度用來限制最大寬度 (橫向時高變成寬)
     const isLandscape = photoWidth > photoHeight;
@@ -125,7 +125,7 @@ const WatermarkInfo = ({formData, photoWidth, photoHeight}: {
                     textShadowColor: 'black',
                     textShadowRadius: 1
                 }}>
-                    {formData.project || '未指定建案'}
+                    {formData.constructionName || '未指定建案'}
                 </Text>
             </View>
 
@@ -181,9 +181,9 @@ export default function CameraScreen() {
     const [isAreaSelectorOpen, setIsAreaSelectorOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [formData, setFormData] = useState({
-        project: '',
+        constructionName: '',
         floor: '',
-        unit: '',
+        room: '',
         item: '',
         area: '',
         areaLabel: '',
@@ -240,12 +240,12 @@ export default function CameraScreen() {
         if (mode !== 'scan') return;
         try {
             const parsedData: QRCodeData = JSON.parse(data);
-            if (parsedData.floor || parsedData.unit) {
+            if (parsedData.floor || parsedData.room) {
                 setFormData(prev => ({
                     ...prev,
-                    project: parsedData.project || '未命名建案',
+                    constructionName: parsedData.constructionName || '未命名建案',
                     floor: parsedData.floor || '',
-                    unit: parsedData.unit || '',
+                    room: parsedData.room || '',
                     item: parsedData.item || selectedItem.name,
                 }));
                 setMode('form');
@@ -538,7 +538,7 @@ export default function CameraScreen() {
                             <View className="bg-primary/10 px-4 py-2 flex-row items-center mb-2 mx-4 rounded-lg">
                                 <Check size={14} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                                 <Text
-                                    className="text-primary text-xs ml-2">已自動帶入 {formData.project || '建案'} 資訊</Text>
+                                    className="text-primary text-xs ml-2">已自動帶入 {formData.constructionName || '建案'} 資訊</Text>
                             </View>
                         </View>
                         <ScrollView className="flex-1 px-4 pt-6" contentContainerStyle={{paddingBottom: 180}}>
@@ -558,7 +558,7 @@ export default function CameraScreen() {
                                 <View className="flex-1">
                                     <Text className="text-muted-foreground text-xs mb-2 pl-1">戶別</Text>
                                     <View className="bg-muted p-4 rounded-xl border border-border"><Text
-                                        className="text-foreground font-bold text-base">{formData.unit || '尚未掃描'}</Text></View>
+                                        className="text-foreground font-bold text-base">{formData.room || '尚未掃描'}</Text></View>
                                 </View>
                             </View>
                             <View className="mb-6">

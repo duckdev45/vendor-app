@@ -25,6 +25,12 @@
         {
           "cameraPermission": "Allow vendor-app to access your camera to scan QR codes and take photos."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow vendor-app to use your location."
+        }
       ]
     ],
     "experiments": {

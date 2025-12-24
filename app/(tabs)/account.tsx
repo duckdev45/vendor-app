@@ -2,7 +2,7 @@ import {View, Text, ScrollView, TouchableOpacity, Switch} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useState} from 'react';
 import {
-    User, Type, Bell, Moon, Lock, FileText, LogOut, ChevronRight, Smartphone, Minus, Plus
+    User, Type, Moon, Lock, LogOut, ChevronRight, Minus, Plus
 } from 'lucide-react-native';
 import {useColorScheme} from 'nativewind';
 import {usePreferences} from '@/context/preferences-context';
@@ -15,13 +15,13 @@ export default function AccountScreen() {
     // 取得字體控制權
     const {fontScale, setFontScale} = usePreferences();
 
-    // 調整邏輯：範圍 0.8x ~ 1.6x
+    // 調整邏輯：範圍 1.0x ~ 1.6x
     const increaseFont = () => {
         if (fontScale < 1.6) setFontScale(Math.round((fontScale + 0.1) * 10) / 10);
     };
 
     const decreaseFont = () => {
-        if (fontScale > 0.8) setFontScale(Math.round((fontScale - 0.1) * 10) / 10);
+        if (fontScale > 1.0) setFontScale(Math.round((fontScale - 0.1) * 10) / 10);
     };
 
     return (
@@ -39,14 +39,14 @@ export default function AccountScreen() {
                             <User size={32} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
                         </View>
                         <View className="flex-1">
-                            <Text className="text-foreground text-xl font-bold">Admin</Text>
+                            <Text className="text-foreground text-lg font-bold">Admin</Text>
                             <Text className="text-muted-foreground text-sm">工管部 | 資訊</Text>
-                            <View className="flex-row items-center mt-2">
-                                <View className="bg-primary/10 px-2 py-0.5 rounded border border-primary/20 mr-2">
-                                    <Text className="text-primary text-[10px] font-bold">已認證員工</Text>
-                                </View>
-                                <Text className="text-muted-foreground text-xs">ID: 9527</Text>
-                            </View>
+                            {/*<View className="flex-row items-center mt-2">*/}
+                            {/*    <View className="bg-primary/10 px-2 py-0.5 rounded border border-primary/20 mr-2">*/}
+                            {/*        <Text className="text-primary text-[10px] font-bold">已認證員工</Text>*/}
+                            {/*    </View>*/}
+                            {/*    <Text className="text-muted-foreground text-xs">ID: 9527</Text>*/}
+                            {/*</View>*/}
                         </View>
                         <TouchableOpacity className="bg-card p-2 rounded-full border border-border">
                             <ChevronRight size={20} color={isDarkMode ? '#F4F4F5' : '#71717A'}/>
@@ -72,7 +72,7 @@ export default function AccountScreen() {
                             <Switch value={isDarkMode} onValueChange={toggleColorScheme}/>
                         </View>
 
-                        {/* 🔥 字體大小調整 (Grandpa Mode) */}
+                        {/* 字體大小調整 (Grandpa Mode) */}
                         <View className="p-4 border-b border-border">
                             <View className="flex-row items-center mb-3">
                                 <View className="w-8 h-8 rounded-lg bg-blue-500/20 items-center justify-center mr-3">
@@ -81,7 +81,7 @@ export default function AccountScreen() {
                                 <View>
                                     <Text className="text-foreground font-medium text-base">字體大小</Text>
                                     <Text className="text-muted-foreground text-xs">
-                                        目前倍率：{fontScale.toFixed(1)}x {fontScale >= 1.4 ? '(阿公模式 👴)' : ''}
+                                        目前倍率：{fontScale.toFixed(1)}
                                     </Text>
                                 </View>
                             </View>
@@ -101,7 +101,7 @@ export default function AccountScreen() {
                                     <View
                                         className="h-1 bg-border w-24 rounded-full mx-2 overflow-hidden flex-row items-center">
                                         <View
-                                            style={{width: `${((fontScale - 0.8) / 0.8) * 100}%`}}
+                                            style={{width: `${((fontScale - 1.0) / 0.6) * 100}%`}}
                                             className="h-full bg-primary"
                                         />
                                     </View>
@@ -118,15 +118,15 @@ export default function AccountScreen() {
                         </View>
 
                         {/* 通知設定 */}
-                        <View className="flex-row items-center justify-between p-4">
-                            <View className="flex-row items-center">
-                                <View className="w-8 h-8 rounded-lg bg-red-500/20 items-center justify-center mr-3">
-                                    <Bell size={18} color={'#F87171'}/>
-                                </View>
-                                <Text className="text-foreground font-medium text-base">推播通知</Text>
-                            </View>
-                            <Switch value={isNotifEnabled} onValueChange={setIsNotifEnabled}/>
-                        </View>
+                        {/*<View className="flex-row items-center justify-between p-4">*/}
+                        {/*    <View className="flex-row items-center">*/}
+                        {/*        <View className="w-8 h-8 rounded-lg bg-red-500/20 items-center justify-center mr-3">*/}
+                        {/*            <Bell size={18} color={'#F87171'}/>*/}
+                        {/*        </View>*/}
+                        {/*        <Text className="text-foreground font-medium text-base">推播通知</Text>*/}
+                        {/*    </View>*/}
+                        {/*    <Switch value={isNotifEnabled} onValueChange={setIsNotifEnabled}/>*/}
+                        {/*</View>*/}
                     </View>
 
                     {/* === 帳號維護 === */}
@@ -144,20 +144,20 @@ export default function AccountScreen() {
                             <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
                         </TouchableOpacity>
 
-                        <TouchableOpacity className="flex-row items-center justify-between p-4">
-                            <View className="flex-row items-center">
-                                <View className="w-8 h-8 rounded-lg bg-orange-500/20 items-center justify-center mr-3">
-                                    <Smartphone size={18} color={'#FB923C'}/>
-                                </View>
-                                <View>
-                                    <Text className="text-foreground font-medium text-base">綁定手機</Text>
-                                    <Text className="text-muted-foreground text-xs">0975-***-887</Text>
-                                </View>
-                            </View>
-                            <View className="bg-green-500/10 px-2 py-1 rounded">
-                                <Text className="text-green-500 text-[10px] font-bold">已綁定</Text>
-                            </View>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity className="flex-row items-center justify-between p-4">*/}
+                        {/*    <View className="flex-row items-center">*/}
+                        {/*        <View className="w-8 h-8 rounded-lg bg-orange-500/20 items-center justify-center mr-3">*/}
+                        {/*            <Smartphone size={18} color={'#FB923C'}/>*/}
+                        {/*        </View>*/}
+                        {/*        <View>*/}
+                        {/*            <Text className="text-foreground font-medium text-base">綁定手機</Text>*/}
+                        {/*            <Text className="text-muted-foreground text-xs">0975-***-887</Text>*/}
+                        {/*        </View>*/}
+                        {/*    </View>*/}
+                        {/*    <View className="bg-green-500/10 px-2 py-1 rounded">*/}
+                        {/*        <Text className="text-green-500 text-[10px] font-bold">已綁定</Text>*/}
+                        {/*    </View>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
 
                     {/* === 關於 === */}
@@ -165,27 +165,27 @@ export default function AccountScreen() {
                         className="text-muted-foreground text-xs font-bold mt-6 mb-3 uppercase tracking-wider">關於</Text>
 
                     <View className="bg-card rounded-2xl overflow-hidden border border-border mb-6">
-                        <TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">
-                            <View className="flex-row items-center">
-                                <FileText size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'} mr-3/>
-                                <Text className="text-foreground font-medium text-base">隱私權條款</Text>
-                            </View>
-                            <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>
-                        </TouchableOpacity>
+                        {/*<TouchableOpacity className="flex-row items-center justify-between p-4 border-b border-border">*/}
+                        {/*    <View className="flex-row items-center">*/}
+                        {/*        <FileText size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'} mr-3/>*/}
+                        {/*        <Text className="text-foreground font-medium text-base">隱私權條款</Text>*/}
+                        {/*    </View>*/}
+                        {/*    <ChevronRight size={18} color={isDarkMode ? '#D4D4D8' : '#71717A'}/>*/}
+                        {/*</TouchableOpacity>*/}
 
                         <View className="flex-row items-center justify-between p-4">
                             <View className="flex-row items-center">
                                 <Text className="text-muted-foreground font-medium text-base">版本資訊</Text>
                             </View>
-                            <Text className="text-muted-foreground text-sm">v1.0.0 (Build 20251221)</Text>
+                            <Text className="text-muted-foreground text-sm">v1.0.0</Text>
                         </View>
                     </View>
 
                     {/* === 登出 === */}
                     <TouchableOpacity
                         className="flex-row items-center justify-center bg-red-500/10 border border-red-500/20 p-4 rounded-2xl active:bg-red-500/20">
-                        <LogOut size={20} color={'#EF4444'} mr-2/>
-                        <Text className="text-red-500 font-bold text-base">登出帳號</Text>
+                        <LogOut size={20} color={'#EF4444'}/>
+                        <Text className="text-red-500 font-bold text-base ml-2">登出</Text>
                     </TouchableOpacity>
 
                     <Text className="text-muted-foreground text-xs text-center mt-6">
