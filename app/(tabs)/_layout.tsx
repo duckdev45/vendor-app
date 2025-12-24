@@ -86,14 +86,15 @@ export default function TabLayout() {
                                     backgroundColor: COLORS.primary,
                                     justifyContent: 'center',
                                     alignItems: 'center',
-                                    marginBottom: Platform.OS === 'ios' ? 20 : 40,
+                                    // marginBottom: Platform.OS === 'ios' ? 20 : 30,
+                                    marginBottom: 20,
                                     shadowColor: '#000000',
                                     shadowOffset: {width: 0, height: 4},
                                     shadowOpacity: 0.3,
                                     shadowRadius: 8,
                                     elevation: 8,
                                     borderWidth: 4,
-                                    borderColor: isDark ? '#000000' : '#F4F4F5',
+                                    borderColor: isDark ? '#333333' : '#F4F4F5',
                                 }}
                             >
                                 <Camera size={28} color={COLORS.cameraIcon} strokeWidth={2.5}/>

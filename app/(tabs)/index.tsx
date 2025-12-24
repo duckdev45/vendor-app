@@ -225,7 +225,7 @@ export default function HomeScreen() {
                     </View>
 
                     {/* 右下：3D Icon */}
-                    <View className="-mr-10 -mb-5 shadow-2xl shadow-black/20">
+                    <View className="-mr-10 mb-8 shadow-2xl shadow-black/20">
                         {loading ? (
                             <ActivityIndicator size="large" color={isDark ? "#fff" : "#000"}/>
                         ) : (
