@@ -1,6 +1,6 @@
 import {Tabs} from 'expo-router';
 import {View, Platform} from 'react-native';
-import {Home, ListTodo, Camera, User, Images} from 'lucide-react-native';
+import {Home, Camera, User, Images} from 'lucide-react-native';
 import {useColorScheme, vars} from "nativewind";
 import {usePreferences} from "@/context/preferences-context";
 
@@ -52,7 +52,7 @@ export default function TabLayout() {
                         paddingTop: 10,
                     },
                     tabBarLabelStyle: {
-                        fontSize: 10,
+                        fontSize: 14,
                         fontWeight: '600',
                         marginTop: 2,
                     },
@@ -66,13 +66,13 @@ export default function TabLayout() {
                         tabBarIcon: ({color}) => <Home size={24} color={color}/>,
                     }}
                 />
-                <Tabs.Screen
-                    name="task"
-                    options={{
-                        title: '任務',
-                        tabBarIcon: ({color}) => <ListTodo size={24} color={color}/>,
-                    }}
-                />
+                {/*<Tabs.Screen*/}
+                {/*    name="task"*/}
+                {/*    options={{*/}
+                {/*        title: '任務',*/}
+                {/*        tabBarIcon: ({color}) => <ListTodo size={24} color={color}/>,*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <Tabs.Screen
                     name="camera"
                     options={{
@@ -103,13 +103,13 @@ export default function TabLayout() {
                         tabBarLabelStyle: {display: 'none'},
                     }}
                 />
-                <Tabs.Screen
-                    name="gallery"
-                    options={{
-                        title: '動態',
-                        tabBarIcon: ({color}) => <Images size={24} color={color}/>,
-                    }}
-                />
+                {/*<Tabs.Screen*/}
+                {/*    name="gallery"*/}
+                {/*    options={{*/}
+                {/*        title: '動態',*/}
+                {/*        tabBarIcon: ({color}) => <Images size={24} color={color}/>,*/}
+                {/*    }}*/}
+                {/*/>*/}
                 <Tabs.Screen
                     name="account"
                     options={{

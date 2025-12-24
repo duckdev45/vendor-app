@@ -295,6 +295,22 @@ export default function CameraScreen() {
         }
     };
 
+    const handleTakePhoto = () => {
+        if (!formData.area) {
+            Alert.alert("請先選擇區域", "必須先選擇一個區域才能新增照片");
+            return;
+        }
+        setMode('capture');
+    };
+
+    const handlePickImage = () => {
+        if (!formData.area) {
+            Alert.alert("請先選擇區域", "必須先選擇一個區域才能新增照片");
+            return;
+        }
+        pickImage();
+    };
+
     const pickImage = async () => {
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -606,12 +622,12 @@ export default function CameraScreen() {
                             </View>
                             <Text className="text-muted-foreground text-xs mb-2 pl-1">新增照片</Text>
                             <View className=" gap-3 mb-8">
-                                <TouchableOpacity onPress={() => setMode('capture')}
+                                <TouchableOpacity onPress={handleTakePhoto}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
                                     <CameraIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
                                     className="text-muted-foreground font-bold mt-2">拍攝照片</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={pickImage}
+                                <TouchableOpacity onPress={handlePickImage}
                                                   className="flex-1 bg-muted p-4 rounded-2xl items-center justify-center border border-border active:bg-border h-24">
                                     <ImageIcon size={28} color={isDarkMode ? '#F4F4F5' : '#71717A'}/><Text
                                     className="text-muted-foreground font-bold mt-2">從相簿選取</Text>
@@ -712,3 +728,4 @@ export default function CameraScreen() {
         </View>
     );
 }
+
