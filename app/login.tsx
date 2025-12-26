@@ -78,11 +78,12 @@ export default function LoginScreen() {
                         <View>
                             <Text className="text-white text-5xl font-thin tracking-wider uppercase leading-none">
                                 {/*EAGLE AI*/}
-                                廠商上傳系統
+                                {/*廠商上傳系統*/}
+                                FU-MAO
                             </Text>
-                            {/*<Text className="text-white text-lg font-bold tracking-[0.38em] uppercase text-justify">*/}
-                            {/*    AI*/}
-                            {/*</Text>*/}
+                            <Text className="text-white text-lg font-bold tracking-[0.38em] uppercase text-justify">
+                                CONSTRUCTION
+                            </Text>
                         </View>
                     </View>
 
