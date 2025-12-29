@@ -1,4 +1,4 @@
-# 🏗️ Fu-Mao Vendor App
+# Vendor App with React Native & Expo
 
 ## ⚙️ Tech Stack
 
@@ -121,7 +121,7 @@ descendants of the `View` with the `.dark` class applied, while maintaining the 
 
 ## Project Structure
 
-採用 **功能導向 (Feature-based)** 搭配 **三層式架構** 來組織程式碼
+**功能導向 (Feature-based)**
 
 ```text
 vendor-app/

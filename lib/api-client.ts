@@ -2,20 +2,22 @@ import axios, {AxiosError, AxiosInstance, InternalAxiosRequestConfig} from 'axio
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DeviceEventEmitter, Alert} from 'react-native';
 
-// 定義 API 回傳的標準格式
+// defined API response structure
 interface ApiResponse<T = any> {
     code: number;
     msg: string;
     data: T;
 }
 
-// 事件名稱常數
+// defined auth events
 export const AUTH_EVENTS = {
     UNAUTHORIZED: 'auth:unauthorized',
 };
 
 /**
- * 建立 HTTP Client 實例的工廠函式
+ * create Axios HTTP client with interceptors
+ * @param baseURL API base URL
+ * @returns AxiosInstance
  */
 export function createHttpClient(baseURL: string): AxiosInstance {
     const instance = axios.create({
@@ -24,10 +26,10 @@ export function createHttpClient(baseURL: string): AxiosInstance {
         headers: {'Content-Type': 'application/json'},
     });
 
-    // === Request 攔截器 (自動帶 Token) ===
+    // Request interceptor (attach token)
     instance.interceptors.request.use(
         async (config: InternalAxiosRequestConfig) => {
-            // 在 RN 裡讀取 Storage 是非同步的，這在 axios 攔截器裡是允許的
+            // read token from AsyncStorage and attach to headers
             const token = await AsyncStorage.getItem('auth_token');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
@@ -37,32 +39,32 @@ export function createHttpClient(baseURL: string): AxiosInstance {
         (error: AxiosError) => Promise.reject(error)
     );
 
-    // === Response 攔截器 (統一處理錯誤) ===
+    // Response interceptor (handle responses)
     instance.interceptors.response.use(
         (response) => {
-            // 假設你的後端成功會回傳 200，且 body 包含 code === 0
+            // successful response within 2xx
             const {code, msg, data} = response.data as ApiResponse;
 
-            // 成功 (Happy Path)
-            // 這裡可以根據後端習慣，有些是 code === 200 或 success === true
+            // successful business logic
+            // code 0 or 200 means success
             if (code === 0 || code === 200) {
                 return data;
             }
 
-            // 處理權限錯誤 (Token 過期 / 被踢出) -> 觸發登出
-            // 假設 10004 是權限不足，401 是標準 HTTP status
+            // process unauthorized errors
+            // code 10004 or 401 means unauthorized
             if (code === 10004 || code === 401) {
-                // 發送訊號給 AuthContext 執行登出
+                // send unauthorized event
                 DeviceEventEmitter.emit(AUTH_EVENTS.UNAUTHORIZED);
                 return Promise.reject(new Error(msg || '權限已過期'));
             }
 
-            // 其他業務錯誤 (例如參數錯誤)
+            // other business errors (e.g., validation errors)
             Alert.alert('提示', msg || '發生未知錯誤');
             return Promise.reject(new Error(msg));
         },
         (error: AxiosError) => {
-            // 處理 HTTP Status != 2xx 的情況
+            // process network or server errors
             const status = error.response?.status;
 
             if (status === 401 || status === 403) {
@@ -80,11 +82,11 @@ export function createHttpClient(baseURL: string): AxiosInstance {
 
 // === export ===
 
-// 從環境變數讀取 API 網址
+// read API base URL from environment variable or use default
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://dev.eagleai.tw/api/qms';
 
-// 原始 API
+// default API client
 export const api = createHttpClient(API_BASE_URL);
 
-// v1 API
+// versioned API client (v1)
 export const v1Api = createHttpClient(`${API_BASE_URL}/v1`);

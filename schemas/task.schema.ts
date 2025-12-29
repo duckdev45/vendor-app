@@ -8,5 +8,4 @@ export const TaskSchema = z.object({
     deadline: z.string().optional(),
 });
 
-// 自動推導出 TypeScript 型別，不用手寫 interface
 export type Task = z.infer<typeof TaskSchema>;
